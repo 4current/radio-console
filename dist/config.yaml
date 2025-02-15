@@ -1,9 +1,12 @@
 version: 2
 project_name: radio-console
 release:
+  github:
+    owner: 4current
+    name: radio-console
   name_template: '{{.Tag}}'
 builds:
-  - id: radio-console
+  - id: darwin-arm64
     goos:
       - darwin
     goarch:
@@ -32,6 +35,8 @@ builds:
     command: build
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
+    env:
+      - CGO_ENABLED=1
 archives:
   - id: darwin-archive
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'

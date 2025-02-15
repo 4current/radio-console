@@ -1,13 +1,15 @@
 version: 2
-
 project_name: radio-console
+
 builds:
-  - id: radio-console
-    main: ./main.go
+  - id: darwin-arm64
+    env:
+      - CGO_ENABLED=1
     goos:
       - darwin
     goarch:
       - arm64
+    main: ./main.go
 
 archives:
   - id: darwin-archive

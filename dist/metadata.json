@@ -1,1 +1,1 @@
-{"project_name":"radio-console","tag":"v0.0.0","previous_tag":"","version":"0.0.0-SNAPSHOT-none","commit":"none","date":"2025-02-14T20:17:00.936756-05:00","runtime":{"goos":"darwin","goarch":"arm64"}}
+{"project_name":"radio-console","tag":"v0.0.0","previous_tag":"","version":"0.0.0-SNAPSHOT-3c668b2","commit":"3c668b292abec234508ff7748c109e010bbc37cc","date":"2025-02-14T23:10:35.479078-05:00","runtime":{"goos":"darwin","goarch":"arm64"}}

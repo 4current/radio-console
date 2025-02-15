@@ -1,0 +1,18 @@
+{
+	"radios": [
+		{
+			"rig_id": "Kenwood TS-890S",
+			"tcp_host": "127.0.0.1",
+			"tcp_port": "60000"
+		},
+		{
+			"rig_id": "Yaesu FT-991A",
+			"serial_port": "/dev/ttyUSB0",
+			"baud_rate": 9600
+		},
+		{
+			"rig_id": "Icom IC-7300",
+			"rigctl_freq": "12345678"
+		}
+	]
+}
