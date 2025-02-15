@@ -1,0 +1,15 @@
+version: 2
+
+project_name: radio-console
+builds:
+  - id: radio-console
+    main: ./main.go
+    goos:
+      - darwin
+    goarch:
+      - arm64
+
+archives:
+  - id: darwin-archive
+    formats:
+      - zip
