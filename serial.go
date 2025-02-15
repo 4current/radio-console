@@ -4,12 +4,6 @@ import (
 	"github.com/tarm/serial"
 )
 
-type SerialPort interface {
-	Write(p []byte) (n int, err error)
-	Read(p []byte) (n int, err error)
-	Close() error
-}
-
 type SerialPortOpener interface {
 	OpenPort(c *serial.Config) (SerialPort, error)
 }
@@ -39,5 +33,3 @@ func (o *RealSerialPortOpener) OpenPort(c *serial.Config) (SerialPort, error) {
 	}
 	return &RealSerialPort{port: port}, nil
 }
-
-var serialPortOpener SerialPortOpener = &RealSerialPortOpener{}

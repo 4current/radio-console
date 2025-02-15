@@ -15,6 +15,23 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+// Define SerialPort interface and serialPortOpener
+type SerialPort interface {
+	Write(p []byte) (n int, err error)
+	Read(p []byte) (n int, err error)
+	Close() error
+}
+
+var serialPortOpener SerialPortOpener = &defaultSerialPortOpener{}
+
+// SerialPortOpener interface is defined in serial.go
+
+type defaultSerialPortOpener struct{}
+
+func (o *defaultSerialPortOpener) OpenPort(c *serial.Config) (SerialPort, error) {
+	return serial.OpenPort(c)
+}
+
 // Function to send a command via TCP to the Kenwood TS-890S
 func sendTCPCommand(host string, port string, command string) {
 	conn, err := net.Dial("tcp", host+":"+port)
@@ -90,41 +107,30 @@ func main() {
 		radioSelect.Options = append(radioSelect.Options, radio.RigID)
 	}
 
-	// Button for TCP Control (TS-890S)
-	tcpButton := widget.NewButton("Set Frequency (TCP)", func() {
+	// Button for setting frequency
+	setFrequencyButton := widget.NewButton("Set Frequency", func() {
 		selectedRadio := getSelectedRadio(config, radioSelect.Selected)
 		if selectedRadio != nil {
 			freq := freqEntry.Text
-			sendTCPCommand(selectedRadio.TCPHost, selectedRadio.TCPPort, "FA"+freq+";") // Example Kenwood CAT command
-		}
-	})
-
-	// Button for Serial Control
-	serialButton := widget.NewButton("Set Frequency (Serial)", func() {
-		selectedRadio := getSelectedRadio(config, radioSelect.Selected)
-		if selectedRadio != nil {
-			freq := freqEntry.Text
-			sendSerialCommand(selectedRadio.SerialPort, selectedRadio.BaudRate, "FA"+freq+";")
-		}
-	})
-
-	// Button for rigctl Control
-	rigctlButton := widget.NewButton("Set Frequency (rigctl)", func() {
-		selectedRadio := getSelectedRadio(config, radioSelect.Selected)
-		if selectedRadio != nil {
-			freq := freqEntry.Text
-			sendRigctlCommand(freq)
+			switch selectedRadio.ConnType {
+			case "TCP":
+				sendTCPCommand(selectedRadio.TCPHost, selectedRadio.TCPPort, "FA"+freq+";")
+			case "Serial":
+				sendSerialCommand(selectedRadio.SerialPort, selectedRadio.BaudRate, "FA"+freq+";")
+			case "rigctl":
+				sendRigctlCommand(freq)
+			default:
+				fmt.Println("Invalid connection type selected")
+			}
 		}
 	})
 
 	// UI Layout
 	w.SetContent(container.NewVBox(
-		widget.NewLabel("Ham Radio Control"),
+		widget.NewLabel("Radio Console"),
 		radioSelect,
 		freqEntry,
-		tcpButton,
-		serialButton,
-		rigctlButton,
+		setFrequencyButton,
 	))
 
 	w.ShowAndRun()

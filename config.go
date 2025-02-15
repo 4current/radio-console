@@ -7,6 +7,7 @@ import (
 
 type RadioConfig struct {
 	RigID      string `json:"rig_id"`
+	ConnType   string `json:"conn_type"`
 	TCPHost    string `json:"tcp_host,omitempty"`
 	TCPPort    string `json:"tcp_port,omitempty"`
 	SerialPort string `json:"serial_port,omitempty"`
