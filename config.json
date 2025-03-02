@@ -1,21 +1,22 @@
+{"radios":[{"rig_id":"Kenwood TS-890S","conn_type":"TCP","tcp_host":"127.0.0.1","tcp_port":"60000"},{"rig_id":"Yaesu FT-991A","conn_type":"Serial","serial_port":"/dev/ttyUSB0","baud_rate":9600},{"rig_id":"Icom IC-7300","conn_type":"rigctl","rigctl_freq":"12345678"},{"rig_id":"test1","conn_type":"tcp","tcp_host":"192.168.50.15","tcp_port":"20000"},{"rig_id":"","conn_type":""}]}
 {
-	"radios": [
-		{
-			"rig_id": "Kenwood TS-890S",
-			"conn_type": "TCP",
-			"tcp_host": "127.0.0.1",
-			"tcp_port": "60000"
-		},
-		{
-			"rig_id": "Yaesu FT-991A",
-			"conn_type": "Serial",
-			"serial_port": "/dev/ttyUSB0",
-			"baud_rate": 9600
-		},
-		{
-			"rig_id": "Icom IC-7300",
-			"conn_type": "rigctl",
-			"rigctl_freq": "12345678"
-		}
-	]
+  "radios": [
+    {
+      "rig_id": "Kenwood TS-890S",
+      "conn_type": "TCP",
+      "tcp_host": "127.0.0.1",
+      "tcp_port": "60000"
+    },
+    {
+      "rig_id": "Yaesu FT-991A",
+      "conn_type": "Serial",
+      "serial_port": "/dev/ttyUSB0",
+      "baud_rate": 9600
+    },
+    {
+      "rig_id": "Icom IC-7300",
+      "conn_type": "rigctl",
+      "rigctl_freq": "12345678"
+    }
+  ]
 }

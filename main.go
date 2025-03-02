@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"os/exec"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"github.com/tarm/serial"
@@ -12,6 +15,7 @@ import (
 	// "fyne.io/fyne"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -23,8 +27,6 @@ type SerialPort interface {
 }
 
 var serialPortOpener SerialPortOpener = &defaultSerialPortOpener{}
-
-// SerialPortOpener interface is defined in serial.go
 
 type defaultSerialPortOpener struct{}
 
@@ -125,12 +127,18 @@ func main() {
 		}
 	})
 
+	// Settings menu
+	settingsButton := widget.NewButton("Settings", func() {
+		showSettingsDialog(w, config)
+	})
+
 	// UI Layout
 	w.SetContent(container.NewVBox(
 		widget.NewLabel("Radio Console"),
 		radioSelect,
 		freqEntry,
 		setFrequencyButton,
+		settingsButton,
 	))
 
 	w.ShowAndRun()
@@ -143,4 +151,67 @@ func getSelectedRadio(config *Config, rigID string) *RadioConfig {
 		}
 	}
 	return nil
+}
+
+func showSettingsDialog(w fyne.Window, config *Config) {
+	rigIDEntry := widget.NewEntry()
+	connTypeEntry := widget.NewEntry()
+	tcpHostEntry := widget.NewEntry()
+	tcpPortEntry := widget.NewEntry()
+	serialPortEntry := widget.NewEntry()
+	baudRateEntry := widget.NewEntry()
+	rigctlFreqEntry := widget.NewEntry()
+
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{Text: "Rig ID", Widget: rigIDEntry},
+			{Text: "Connection Type", Widget: connTypeEntry},
+			{Text: "TCP Host", Widget: tcpHostEntry},
+			{Text: "TCP Port", Widget: tcpPortEntry},
+			{Text: "Serial Port", Widget: serialPortEntry},
+			{Text: "Baud Rate", Widget: baudRateEntry},
+			{Text: "Rigctl Frequency", Widget: rigctlFreqEntry},
+		},
+		OnSubmit: func() {
+			newRadio := RadioConfig{
+				RigID:      rigIDEntry.Text,
+				ConnType:   connTypeEntry.Text,
+				TCPHost:    tcpHostEntry.Text,
+				TCPPort:    tcpPortEntry.Text,
+				SerialPort: serialPortEntry.Text,
+				BaudRate:   parseInt(baudRateEntry.Text),
+				RigctlFreq: rigctlFreqEntry.Text,
+			}
+			config.Radios = append(config.Radios, newRadio)
+			saveConfig(config)
+			dialog.ShowInformation("Settings", "Settings saved successfully", w)
+		},
+	}
+
+	dialog.ShowForm("Settings", "Save", "Cancel", form.Items, func(bool) { form.OnSubmit() }, w)
+}
+
+func parseInt(s string) int {
+	i, _ := strconv.Atoi(s)
+	return i
+}
+
+func saveConfig(config *Config) {
+	file, err := os.Create("config.json")
+	if err != nil {
+		log.Fatalf("Failed to save config: %v", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(config)
+	if err != nil {
+		log.Fatalf("Failed to encode config: %v", err)
+	}
+
+	encoder.SetIndent("", "  ")
+	err = encoder.Encode(config)
+	if err != nil {
+		log.Fatalf("Failed to encode config: %v", err)
+	}
 }
